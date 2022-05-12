@@ -32,6 +32,7 @@ type
     chkTodos: TCheckBox;
     gridVendas: TDBGrid;
     btnPesquisar: TBitBtn;
+    btnReabrir: TBitBtn;
     procedure FormShow(Sender: TObject);
     procedure chkTodosClick(Sender: TObject);
     procedure btnPesquisarClick(Sender: TObject);
@@ -43,6 +44,7 @@ type
     procedure btnSolicitacaoReceitaClick(Sender: TObject);
     procedure btnFecharClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure btnReabrirClick(Sender: TObject);
   private
     sqlPadrao : TStringList;
     procedure Pesquisar;
@@ -67,6 +69,26 @@ begin
   Pesquisar;
 end;
 
+procedure TfrmPedidosVenda0.btnReabrirClick(Sender: TObject);
+begin
+  with dtSelecoes do
+  begin
+    with ConsPedidosVenda do
+    begin
+      if (RecordCount > 0) then
+      begin
+        if Messagedlg('Deseja reabrir o pedido ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+        begin
+          executarSqlFD('UPDATE PEDIDOS_VENDA SET STATUS = ''A'' WHERE CODIGO = :CODIGO', [ConsPedidosVendaCODIGO.Value]);
+          CommitRFD;
+        end;
+      end;
+    end;
+  end;
+
+  Pesquisar;
+end;
+
 procedure TfrmPedidosVenda0.btnAlterarClick(Sender: TObject);
 begin
   with dtCadastros do
@@ -75,12 +97,18 @@ begin
     begin
       if RecordCount > 0 then
       begin
-        Edit;
-        frmPedidosVenda1 := TfrmPedidosVenda1.Create(Self);
-        frmPedidosVenda1.ShowModal;
-        frmPedidosVenda1.Free;
-
-        Pesquisar;
+        if PedidosVenda.Locate('CODIGO', dtSelecoes.ConsPedidosVendaCODIGO.Value, []) then
+        begin
+          if PedidosVendaSTATUS.Value = 'C' then
+          begin
+            ShowMessage('Não é possivel Alterar, o pedido está como concluído.');
+            Exit;
+          end;
+          Edit;
+          frmPedidosVenda1 := TfrmPedidosVenda1.Create(Self);
+          frmPedidosVenda1.ShowModal;
+          frmPedidosVenda1.Free;
+        end;
       end
       else
       begin
@@ -88,6 +116,8 @@ begin
       end;
     end;
   end;
+
+  Pesquisar;
 end;
 
 procedure TfrmPedidosVenda0.btnFecharClick(Sender: TObject);
@@ -211,6 +241,12 @@ var
 begin
   if ValidarPesquisa then
   begin
+    with dtCadastros do
+    begin
+      PedidosVenda.Close;
+      PedidosVenda.Open;
+    end;
+
     with dtSelecoes do
     begin
       Pos := ConsPedidosVenda.RecNo;

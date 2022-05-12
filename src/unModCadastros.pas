@@ -39,6 +39,7 @@ type
     PedidosVendaVALOR_TOTAL: TFMTBCDField;
     PedidosVendaSTATUS: TStringField;
     PedidosVendaCLIENTE_ID: TIntegerField;
+    PedidosVendaREGISTRO_ID: TStringField;
   private
     { Private declarations }
   public

@@ -166,6 +166,7 @@ object dtCadastros: TdtCadastros
     Top = 240
   end
   object PedidosVenda: TFDQuery
+    Active = True
     CachedUpdates = True
     Connection = DMPrincipal.FireDacCon
     Transaction = DMPrincipal.FireTransCon
@@ -174,7 +175,7 @@ object dtCadastros: TdtCadastros
     SQL.Strings = (
       
         'SELECT CODIGO, PRODUTO_ID, DT_PEDIDO, QTDE_ITEM, VALOR_TOTAL, ST' +
-        'ATUS, CLIENTE_ID'
+        'ATUS, CLIENTE_ID, REGISTRO_ID'
       '  FROM PEDIDOS_VENDA')
     Left = 264
     Top = 192
@@ -219,6 +220,10 @@ object dtCadastros: TdtCadastros
       Origin = 'CLIENTE_ID'
       Required = True
     end
+    object PedidosVendaREGISTRO_ID: TStringField
+      FieldName = 'REGISTRO_ID'
+      Origin = 'REGISTRO_ID'
+    end
   end
   object dsPedidosVenda: TDataSource
     DataSet = PedidosVenda
@@ -227,6 +232,36 @@ object dtCadastros: TdtCadastros
   end
   object upPedidosVenda: TFDUpdateSQL
     Connection = DMPrincipal.FireDacCon
+    InsertSQL.Strings = (
+      'INSERT INTO PEDIDOS_VENDA'
+      '(CODIGO, CLIENTE_ID, PRODUTO_ID, DT_PEDIDO, '
+      '  QTDE_ITEM, VALOR_TOTAL, STATUS, REGISTRO_ID)'
+      
+        'VALUES (:NEW_CODIGO, :NEW_CLIENTE_ID, :NEW_PRODUTO_ID, :NEW_DT_P' +
+        'EDIDO, '
+      
+        '  :NEW_QTDE_ITEM, :NEW_VALOR_TOTAL, :NEW_STATUS, :NEW_REGISTRO_I' +
+        'D)')
+    ModifySQL.Strings = (
+      'UPDATE PEDIDOS_VENDA'
+      
+        'SET CODIGO = :NEW_CODIGO, CLIENTE_ID = :NEW_CLIENTE_ID, PRODUTO_' +
+        'ID = :NEW_PRODUTO_ID, '
+      '  DT_PEDIDO = :NEW_DT_PEDIDO, QTDE_ITEM = :NEW_QTDE_ITEM, '
+      
+        '  VALOR_TOTAL = :NEW_VALOR_TOTAL, STATUS = :NEW_STATUS, REGISTRO' +
+        '_ID = :NEW_REGISTRO_ID'
+      'WHERE CODIGO = :OLD_CODIGO')
+    DeleteSQL.Strings = (
+      'DELETE FROM PEDIDOS_VENDA'
+      'WHERE CODIGO = :OLD_CODIGO')
+    FetchRowSQL.Strings = (
+      
+        'SELECT CODIGO, CLIENTE_ID, PRODUTO_ID, DT_PEDIDO, QTDE_ITEM, VAL' +
+        'OR_TOTAL, '
+      '  STATUS, REGISTRO_ID'
+      'FROM PEDIDOS_VENDA'
+      'WHERE CODIGO = :OLD_CODIGO')
     Left = 264
     Top = 294
   end

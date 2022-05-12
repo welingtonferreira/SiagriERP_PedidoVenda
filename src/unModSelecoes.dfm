@@ -103,7 +103,8 @@ object dtSelecoes: TdtSelecoes
       '  INNER JOIN PRODUTOS P ON P.CODIGO = V.PRODUTO_ID'
       '  INNER JOIN CLIENTES C ON C.CODIGO = V.CLIENTE_ID'
       'WHERE V.DT_PEDIDO >= :DT_INICIAL AND V.DT_PEDIDO <= :DT_FINAL'
-      '     AND (STATUS = :STATUS OR :STATUS = '#39'?'#39')')
+      '     AND (STATUS = :STATUS OR :STATUS = '#39'?'#39')'
+      'ORDER BY V.CODIGO')
     Left = 200
     Top = 40
     ParamData = <

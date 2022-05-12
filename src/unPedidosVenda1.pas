@@ -126,12 +126,12 @@ begin
         begin
           AplicarDados(PedidosVenda);
         end;
+        CommitRFD;
 
         edtCodigo.Clear;
         edtQuantidade.Clear;
         edtValor.Clear;
 
-        CommitRFD;
         Fechar := True;
         Self.Close;
       except
